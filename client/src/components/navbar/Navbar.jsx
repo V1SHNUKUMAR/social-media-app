@@ -7,14 +7,30 @@ import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
+import LogoutIcon from '@mui/icons-material/Logout';
 import { Link } from "react-router-dom";
 import { useContext } from "react";
 import { DarkModeContext } from "../../context/darkModeContext";
 import { AuthContext } from "../../context/authContext";
+import { useMutation } from "@tanstack/react-query";
+import { makeRequest } from "../../axios";
 
 const Navbar = () => {
   const { toggle, darkMode } = useContext(DarkModeContext);
-  const { currentUser } = useContext(AuthContext);
+  const { currentUser, logout } = useContext(AuthContext);
+
+  const logoutMutation = useMutation({
+    mutationFn: () => makeRequest.post("/auth/logout"),
+    onSuccess: () => {
+      logout();
+      queryClient.clear();
+      navigate("/login", { replace: true });
+    },
+  });
+
+  const handleLogout = () => {
+    logoutMutation.mutate()
+  }
 
   return (
     <div className="navbar">
@@ -45,7 +61,9 @@ const Navbar = () => {
           />
           <span>{currentUser.name}</span>
         </div>
-        
+        <div className="logout-button" onClick={handleLogout}>
+          <LogoutIcon color="red" />
+        </div>
       </div>
     </div>
   );
