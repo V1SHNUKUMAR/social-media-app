@@ -4,11 +4,11 @@
   @include themify($themes) {
     flex: 2;
     position: sticky;
-    top: 70px;
-    height: calc(100vh - 70px);
+    top: 4rem;
+    height: calc(100vh - 4rem);
     overflow: scroll;
-    background-color: themed("bg");
-    color: themed("textColor");
+    background-color: transparent;
+    color: var(--foreground);
 
     @include mobile{
       display: none;
@@ -25,7 +25,7 @@
         margin: 20px 0px;
         border: none;
         height: 0.5px;
-        background-color: themed("border");
+        background-color: var(--border);
       }
 
       .menu {

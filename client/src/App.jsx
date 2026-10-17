@@ -26,12 +26,12 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <div className={`theme-${darkMode ? "dark" : "light"}`}>
           <Navbar />
-          <div style={{ display: "flex" }}>
+          <div className="mx-auto flex w-full max-w-7xl">
             <LeftBar />
             <div style={{ flex: 6 }}>
               <Outlet />
             </div>
-            <RightBar />
+            <RightBar userId={currentUser?.id} />
           </div>
         </div>
       </QueryClientProvider>

@@ -66,7 +66,7 @@ export const deletePost = (req, res) => {
       userInfo.id,
     ];
 
-    db.query(q, [values], (err, data) => {
+    db.query(q, values, (err, data) => {
       if (err) return res.status(500).json(err);
       if(data?.affectedRows > 0) return res.status(200).json("Post has been deleted.");
       return res.status(403).json("You can delete only your post.");

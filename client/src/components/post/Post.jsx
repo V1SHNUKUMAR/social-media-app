@@ -1,9 +1,4 @@
-import "./post.scss";
-import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
-import FavoriteOutlinedIcon from "@mui/icons-material/FavoriteOutlined";
-import TextsmsOutlinedIcon from "@mui/icons-material/TextsmsOutlined";
-import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined";
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import { Heart, MessageCircle, Share2, MoreHorizontal, Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import Comments from "../comments/Comments";
 import { useState } from "react";
@@ -12,6 +7,11 @@ import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { makeRequest } from "../../axios";
 import { useContext } from "react";
 import { AuthContext } from "../../context/authContext";
+import { Button } from "../ui/button";
+
+// Icon-only action buttons: hover changes the icon colour, never the background.
+const actionClass =
+  "gap-1.5 rounded-lg px-2 cursor-pointer hover:bg-transparent dark:hover:bg-transparent aria-expanded:bg-transparent";
 
 const Post = ({ post }) => {
   const [commentOpen, setCommentOpen] = useState(false);
@@ -57,54 +57,128 @@ const Post = ({ post }) => {
     deleteMutation.mutate(post.id);
   };
 
+  const liked = data?.includes(currentUser.id);
+
   return (
-    <div className="post">
-      <div className="container">
-        <div className="user">
-          <div className="userInfo">
-            <img src={"/upload/"+post?.profilePic} alt="" />
-            <div className="details">
+    <div className="post overflow-hidden rounded-2xl border bg-card text-card-foreground shadow-sm transition-shadow hover:shadow-md hover:shadow-primary/5">
+      <div className="container flex flex-col gap-4 p-5">
+        {/* Header */}
+        <div className="user relative flex items-center justify-between">
+          <div className="userInfo flex items-center gap-3">
+            <Link to={`/profile/${post?.id}`} className="shrink-0">
+              {post?.profilePic ? (
+                <img
+                  src={"/upload/" + post.profilePic}
+                  alt={post?.name}
+                  className="size-9 rounded-full object-cover"
+                />
+              ) : (
+                <div className="flex size-9 items-center justify-center rounded-full bg-accent text-sm font-semibold text-accent-foreground">
+                  {post?.name?.[0]?.toUpperCase()}
+                </div>
+              )}
+            </Link>
+            <div className="details flex flex-col leading-tight">
               <Link
                 to={`/profile/${post?.userId}`}
-                style={{ textDecoration: "none", color: "inherit" }}
+                className="no-underline"
               >
-                <span className="name">{post.name}</span>
+                <span className="name text-sm font-semibold text-foreground hover:text-primary">
+                  {post.name}
+                </span>
               </Link>
-              <span className="date">{moment(post.createdAt).fromNow()}</span>
+              <span className="date text-xs text-muted-foreground">
+                {moment(post.createdAt).fromNow()}
+              </span>
             </div>
           </div>
-          <MoreHorizIcon onClick={() => setMenuOpen(!menuOpen)} />
-          {menuOpen && post.userId === currentUser.id && (
-            <button onClick={handleDelete}>delete</button>
+
+          {post.userId === currentUser.id && <Button
+            variant="ghost"
+            size="icon"
+            aria-label="More options"
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="rounded-lg text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+          >
+            <MoreHorizontal className="size-5" />
+          </Button>}
+
+          {menuOpen && (
+            <div className="absolute top-full right-0 z-10 mt-1 min-w-32 overflow-hidden rounded-xl border bg-popover p-1 shadow-lg">
+              <button
+                onClick={handleDelete}
+                className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-destructive transition-colors hover:bg-destructive/10"
+              >
+                <Trash2 className="size-4" />
+                delete
+              </button>
+            </div>
           )}
         </div>
-        <div className="content">
-          <p>{post.desc}</p>
-          <img src={"/upload/" + post.img} alt="" />
+
+        {/* Content */}
+        <div className="content flex flex-col gap-3">
+          <p className="text-[15px] leading-relaxed text-foreground">{post.desc}</p>
+          {post.img && (
+            <img
+              src={"/upload/" + post.img}
+              alt=""
+              className="max-h-[520px] w-full rounded-xl border object-cover"
+            />
+          )}
         </div>
-        <div className="info">
+
+        {/* Actions */}
+        <div className="info flex items-center justify-between gap-2 border-t pt-3">
           <div className="item">
             {isLoading ? (
-              "loading"
-            ) : data?.includes(currentUser.id) ? (
-              <FavoriteOutlinedIcon
-                style={{ color: "red" }}
-                onClick={handleLike}
-              />
+              <span className="px-3 text-sm text-muted-foreground">loading</span>
             ) : (
-              <FavoriteBorderOutlinedIcon onClick={handleLike} />
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleLike}
+                aria-label={liked ? "Unlike" : "Like"}
+                aria-pressed={liked}
+                className={`${actionClass} ${
+                  liked ? "text-destructive" : "text-muted-foreground hover:text-destructive"
+                }`}
+              >
+                <Heart className={`size-5 ${liked ? "fill-current" : ""}`} />
+                {data?.length > 0 && (
+                  <span className="text-sm tabular-nums">{data.length}</span>
+                )}
+              </Button>
             )}
-            {data?.length} Likes
           </div>
-          <div className="item" onClick={() => setCommentOpen(!commentOpen)}>
-            <TextsmsOutlinedIcon />
-            See Comments
-          </div>
+
           <div className="item">
-            <ShareOutlinedIcon />
-            Share
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setCommentOpen(!commentOpen)}
+              aria-label={commentOpen ? "Hide comments" : "Show comments"}
+              aria-expanded={commentOpen}
+              className={`${actionClass} ${
+                commentOpen ? "text-primary" : "text-muted-foreground hover:text-primary"
+              }`}
+            >
+              <MessageCircle className="size-5" />
+            </Button>
+          </div>
+
+          <div className="item">
+            <Button
+              variant="ghost"
+              size="sm"
+              aria-label="Share"
+              className={`${actionClass} text-muted-foreground hover:text-primary`}
+            >
+              <Share2 className="size-5" />
+            </Button>
           </div>
         </div>
+
         {commentOpen && <Comments postId={post.id} />}
       </div>
     </div>

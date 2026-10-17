@@ -38,15 +38,15 @@
         font-size: 14px;
       }
       
-      button {
-        width: 50%;
-        padding: 10px;
-        border: none;
-        background-color: white;
-        color: rebeccapurple;
-        font-weight: bold;
-        cursor: pointer;
-      }
+      // button {
+      //   width: 50%;
+      //   padding: 10px;
+      //   border: none;
+      //   background-color: white;
+      //   color: rebeccapurple;
+      //   font-weight: bold;
+      //   cursor: pointer;
+      // }
     }
 
     .right {
@@ -66,21 +66,21 @@
         flex-direction: column;
         gap: 30px;
         
-        input {
-        border: none;
-        border-bottom: 1px solid lightgray;
-        padding: 20px 10px;
-        }
+        // input {
+        // border: none;
+        // border-bottom: 1px solid lightgray;
+        // padding: 20px 10px;
+        // }
         
-        button {
-          width: 50%;
-          padding: 10px;
-          border: none;
-          background-color: #938eef;
-          color: white;
-          font-weight: bold;
-          cursor: pointer;
-        }
+        // button {
+        //   width: 50%;
+        //   padding: 10px;
+        //   border: none;
+        //   background-color: #938eef;
+        //   color: white;
+        //   font-weight: bold;
+        //   cursor: pointer;
+        // }
       }
     }
   }

@@ -1,9 +1,13 @@
 import "./leftBar.scss";
-import Friends from "../../assets/1.png";
-import Groups from "../../assets/2.png";
-import Market from "../../assets/3.png";
-import Watch from "../../assets/4.png";
-import Memories from "../../assets/5.png";
+import { NavLink } from "react-router-dom";
+import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
+import ExploreOutlinedIcon from "@mui/icons-material/ExploreOutlined";
+import StorefrontOutlinedIcon from "@mui/icons-material/StorefrontOutlined";
+import GroupsOutlinedIcon from "@mui/icons-material/GroupsOutlined";
+import BookmarkBorderOutlinedIcon from "@mui/icons-material/BookmarkBorderOutlined";
+import SendOutlinedIcon from "@mui/icons-material/SendOutlined";
+import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
+import { cn } from "@/lib/utils";
 import Events from "../../assets/6.png";
 import Gaming from "../../assets/7.png";
 import Gallery from "../../assets/8.png";
@@ -12,85 +16,49 @@ import Messages from "../../assets/10.png";
 import Tutorials from "../../assets/11.png";
 import Courses from "../../assets/12.png";
 import Fund from "../../assets/13.png";
-import { AuthContext } from "../../context/authContext";
-import { useContext } from "react";
+
+// Only Feed has a route so far; the rest render as inert buttons until their pages exist.
+const navItems = [
+  { label: "Feed", icon: HomeOutlinedIcon, to: "/" },
+  { label: "Explore", icon: ExploreOutlinedIcon },
+  { label: "Marketplace", icon: StorefrontOutlinedIcon },
+  { label: "Groups", icon: GroupsOutlinedIcon },
+  { label: "My favorites", icon: BookmarkBorderOutlinedIcon },
+  { label: "Messages", icon: SendOutlinedIcon },
+  { label: "Settings", icon: SettingsOutlinedIcon },
+];
+
+const navItemClass =
+  "flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground";
 
 const LeftBar = () => {
 
-  const { currentUser } = useContext(AuthContext);
 
   return (
     <div className="leftBar">
       <div className="container">
-        <div className="menu">
-          <div className="user">
-            <img
-              src={"/upload/" +currentUser.profilePic}
-              alt=""
-            />
-            <span>{currentUser.name}</span>
-          </div>
-          <div className="item">
-            <img src={Friends} alt="" />
-            <span>Friends</span>
-          </div>
-          <div className="item">
-            <img src={Groups} alt="" />
-            <span>Groups</span>
-          </div>
-          <div className="item">
-            <img src={Market} alt="" />
-            <span>Marketplace</span>
-          </div>
-          <div className="item">
-            <img src={Watch} alt="" />
-            <span>Watch</span>
-          </div>
-          <div className="item">
-            <img src={Memories} alt="" />
-            <span>Memories</span>
-          </div>
-        </div>
-        <hr />
-        <div className="menu">
-          <span>Your shortcuts</span>
-          <div className="item">
-            <img src={Events} alt="" />
-            <span>Events</span>
-          </div>
-          <div className="item">
-            <img src={Gaming} alt="" />
-            <span>Gaming</span>
-          </div>
-          <div className="item">
-            <img src={Gallery} alt="" />
-            <span>Gallery</span>
-          </div>
-          <div className="item">
-            <img src={Videos} alt="" />
-            <span>Videos</span>
-          </div>
-          <div className="item">
-            <img src={Messages} alt="" />
-            <span>Messages</span>
-          </div>
-        </div>
-        <hr />
-        <div className="menu">
-          <span>Others</span>
-          <div className="item">
-            <img src={Fund} alt="" />
-            <span>Fundraiser</span>
-          </div>
-          <div className="item">
-            <img src={Tutorials} alt="" />
-            <span>Tutorials</span>
-          </div>
-          <div className="item">
-            <img src={Courses} alt="" />
-            <span>Courses</span>
-          </div>
-        </div>
+        <nav className="flex flex-col gap-4">
+          {navItems.map(({ label, icon: Icon, to }) =>
+            to ? (
+              <NavLink
+                key={label}
+                to={to}
+                end
+                className={({ isActive }) =>
+                  cn(navItemClass, isActive && "bg-accent text-primary")
+                }
+              >
+                <Icon fontSize="small" />
+                {label}
+              </NavLink>
+            ) : (
+              <button key={label} type="button" className={navItemClass}>
+                <Icon fontSize="small" />
+                {label}
+              </button>
+            )
+          )}
+        </nav>
       </div>
     </div>
   );

@@ -4,7 +4,7 @@ export const DarkModeContext = createContext();
 
 export const DarkModeContextProvider = ({ children }) => {
   const [darkMode, setDarkMode] = useState(
-    JSON.parse(localStorage.getItem("darkMode")) || false
+    JSON.parse(localStorage.getItem("darkMode")) || true
   );
 
   const toggle = () => {
@@ -13,6 +13,9 @@ export const DarkModeContextProvider = ({ children }) => {
 
   useEffect(() => {
     localStorage.setItem("darkMode", darkMode);
+
+    document.documentElement.classList.toggle("dark", darkMode);
+    document.documentElement.classList.toggle("light", !darkMode);
   }, [darkMode]);
 
   return (

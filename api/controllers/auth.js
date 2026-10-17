@@ -22,8 +22,24 @@ export const register = (req, res)=>{
 
         db.query(q, values, (err, data) => {
             if(err) return res.status(500).json(err);
+            
+            const userData = {
+                id: data.insertId,
+                username: req.body.username,
+                email: req.body.email,
+                name: req.body.name,
+                city: null,
+                coverPic: null,
+                profilePic: null,
+                website: null
+            };
 
-            return res.status(200).json("User has been created.")
+            // Log the new user in straight away, same as /login
+            const token = jwt.sign({id: data.insertId}, "secretkey");
+
+            return res.cookie("token", token, {
+                httpOnly: true
+            }).status(200).json(userData)
         })
 
 
