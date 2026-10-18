@@ -15,7 +15,7 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-    origin: "http://localhost:5173",
+    origin: process.env.CLIENT_URL,
     credentials: true
 }));
 
@@ -42,6 +42,8 @@ app.use('/api/comments', commentRoutes)
 app.use('/api/likes', likeRoutes)
 app.use('/api/relationships', relationshipRoutes)
 
-app.listen(process.env.PORT, ()=>{
-    console.log(`listening on port ${process.env.PORT}`)
+const PORT = process.env.PORT || 8800;
+
+app.listen(PORT, "0.0.0.0", ()=>{
+    console.log(`listening on port ${PORT}`)
 })
