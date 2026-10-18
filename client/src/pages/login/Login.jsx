@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/authContext";
 import FormField from "@/components/formField/FormField";
 import { Button } from "@/components/ui/button";
+import { Loader2Icon } from "lucide-react";
 
 const Login = () => {
   const [inputs, setInputs] = useState({
@@ -12,6 +13,7 @@ const Login = () => {
 
   const [errors, setErrors] = useState({});
   const [err, setErr] = useState(null);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
 
@@ -36,6 +38,7 @@ const Login = () => {
     setErrors(newErrors);
     if (Object.keys(newErrors).length) return;
 
+    setLoading(true);
     try {
       await login(inputs);
       navigate("/");
@@ -45,6 +48,8 @@ const Login = () => {
         error.response?.data ||
         "Login failed. Please try again."
       );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -120,9 +125,12 @@ const Login = () => {
 
             <Button
               type="submit"
+              disabled={loading}
+              aria-busy={loading}
               className="mt-2 h-11 w-full rounded-xl text-base font-semibold shadow-lg shadow-primary/25"
             >
-              Login
+              {loading && <Loader2Icon className="animate-spin" />}
+              {loading ? "Logging in..." : "Login"}
             </Button>
           </form>
         </div>

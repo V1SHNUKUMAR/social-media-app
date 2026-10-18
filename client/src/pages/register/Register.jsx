@@ -2,6 +2,7 @@ import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import FormField from "@/components/formField/FormField";
 import { Button } from "@/components/ui/button";
+import { Loader2Icon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlineOutlined";
 import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
@@ -29,6 +30,7 @@ const Register = () => {
   });
   const [errors, setErrors] = useState({});
   const [err, setErr] = useState(null);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -71,11 +73,14 @@ const Register = () => {
 
     const { confirmPassword, ...payload } = inputs;
 
+    setLoading(true);
     try {
       await register(payload);
       navigate("/");
     } catch (err) {
       setErr(err.response?.data || "Registration failed. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -204,9 +209,12 @@ const Register = () => {
 
             <Button
               type="submit"
+              disabled={loading}
+              aria-busy={loading}
               className="mt-2 h-11 w-full rounded-xl text-base font-semibold shadow-lg shadow-primary/25"
             >
-              Register
+              {loading && <Loader2Icon className="animate-spin" />}
+              {loading ? "Registering..." : "Register"}
             </Button>
           </form>
         </div>
