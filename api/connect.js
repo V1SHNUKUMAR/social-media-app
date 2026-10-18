@@ -1,5 +1,14 @@
 import mysql from "mysql2";
-// import fs from "node:fs";
+import fs from "node:fs";
+
+const isProduction = process.env.NODE_ENV === "production";
+
+const sslConfig = {
+  ca: isProduction
+    ? process.env.DB_SSL_CA?.replace(/\\n/g, "\n")
+    : fs.readFileSync(new URL("./ca.pem", import.meta.url), "utf8"),
+  rejectUnauthorized: true,
+};
 
 export const db = mysql.createConnection({
     host: process.env.DB_HOST,
@@ -7,13 +16,7 @@ export const db = mysql.createConnection({
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_DATABASE,
-    // ssl: {
-    //   ca: fs.readFileSync(new URL("./ca.pem", import.meta.url)),
-    // },
-    ssl: {
-      ca: process.env.DB_SSL_CA,
-      rejectUnauthorized: true,
-    }
+    ssl: sslConfig
 })
 
 db.connect((err) => {
