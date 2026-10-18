@@ -7,7 +7,7 @@ export const getUser = (req, res) => {
 
     // if(!token) return res.status(401).json('Not logged in!')
 
-    // jwt.verify(token, "secretkey", (err, userInfo) => {
+    // jwt.verify(token, process.env.JWT_SECRET_KEY, (err, userInfo) => {
     //     if(err) return res.status(403).json("Token is not valid!")
 
         const q = "SELECT * FROM users WHERE id = ?"
@@ -29,7 +29,7 @@ export const getSuggestions = (req, res) => {
 
     if(!token) return res.status(401).json('Not logged in!')
 
-    jwt.verify(token, "secretkey", (err, userInfo) => {
+    jwt.verify(token, process.env.JWT_SECRET_KEY, (err, userInfo) => {
         if(err) return res.status(403).json("Token is not valid!")
 
         const q = "SELECT u.id, u.username, u.name, u.profilePic FROM users AS u WHERE u.id != ? AND u.id NOT IN (SELECT followedUserId FROM relationships WHERE followerUserId = ?) LIMIT 6"
@@ -53,7 +53,7 @@ export const updateUser = (req, res) => {
 
     if(!token) return res.status(401).json('Not logged in!')
 
-    jwt.verify(token, "secretkey", (err, userInfo) => {
+    jwt.verify(token, process.env.JWT_SECRET_KEY, (err, userInfo) => {
         if(err) return res.status(403).json("Token is not valid!")
 
         const q = "UPDATE users SET `name`=?, `city`=?, `website`=?, `profilePic`=?, `coverPic`=? WHERE id = ?"

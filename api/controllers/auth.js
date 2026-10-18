@@ -35,7 +35,7 @@ export const register = (req, res)=>{
             };
 
             // Log the new user in straight away, same as /login
-            const token = jwt.sign({id: data.insertId}, "secretkey");
+            const token = jwt.sign({id: data.insertId}, process.env.JWT_SECRET_KEY);
 
             return res.cookie("token", token, {
                 httpOnly: true
@@ -61,7 +61,7 @@ export const login = (req, res)=>{
 
         if(!isPasswordCorrect) return res.status(400).json("Wrong username or password!");
 
-        const token = jwt.sign({id: data[0].id}, "secretkey");
+        const token = jwt.sign({id: data[0].id}, process.env.JWT_SECRET_KEY);
 
         const {password, ...others} = data[0]
 
