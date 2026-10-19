@@ -38,7 +38,10 @@ export const register = (req, res)=>{
             const token = jwt.sign({id: data.insertId}, process.env.JWT_SECRET_KEY);
 
             return res.cookie("token", token, {
-                httpOnly: true
+                httpOnly: true,
+                secure: true,
+                sameSite: "none",
+                path: "/",
             }).status(200).json(userData)
         })
 
@@ -66,7 +69,10 @@ export const login = (req, res)=>{
         const {password, ...others} = data[0]
 
         return res.cookie("token", token, {
-            httpOnly: true
+            httpOnly: true,
+            secure: true,
+            sameSite: "none",
+            path: "/",
         }).status(200).json(others)
     })
 }
